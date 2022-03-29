@@ -8,7 +8,7 @@ android {
 
     defaultConfig {
         applicationId "com.example.test01"
-        minSdk 21
+        minSdk 23
         targetSdk 32
         versionCode 1
         versionName "1.0"
@@ -43,4 +43,8 @@ dependencies {
     implementation "com.kakao.sdk:v2-user:2.8.6" // 카카오 로그인
     implementation "com.kakao.sdk:v2-talk:2.8.6" // 친구, 메시지(카카오톡
 
+    // Retrofit
+    implementation "com.google.code.gson:gson:2.8.6"
+    implementation "com.squareup.retrofit2:retrofit:2.6.2"
+    implementation "com.squareup.retrofit2:converter-gson:2.6.2"
 }
