@@ -8,7 +8,7 @@ import retrofit2.http.POST
 interface KakaoInfoService {
 
     @FormUrlEncoded
-    @POST("/app_login/")
+    @POST("")
     fun requestKakaoLogin(
         @Field("Authorization") Authorization:String
     ) : Call<KakaoInfo>
