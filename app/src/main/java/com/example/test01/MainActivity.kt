@@ -6,15 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.ImageButton
 import android.widget.Toast
-import com.example.test01.data.KakaoInfo
-import com.example.test01.data.KakaoInfoService
-import com.kakao.sdk.common.util.Utility
 import com.kakao.sdk.user.UserApiClient
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,28 +30,19 @@ class MainActivity : AppCompatActivity() {
                     Log.d(TAG, "로그인 성공 \n ${token.toString()}")
                     Toast.makeText(this, "성공", Toast.LENGTH_SHORT).show()
 
-                    val retrofit = Retrofit.Builder()
-                        .baseUrl("http://kapi.kakao.com")
-                        .addConverterFactory(GsonConverterFactory.create())
-                        .build()
-
-                    val loginService: KakaoInfoService = retrofit.create(KakaoInfoService::class.java)
-
-                    loginService.requestKakaoLogin("Bearer ${token.accessToken}").enqueue(object:
-                        Callback<KakaoInfo> {
-                        override fun onFailure(call: Call<KakaoInfo>, t: Throwable) {
-                            //실패할 경우
-                            Log.d(TAG, "2차 로그인 실패 \n ${t.message}")
-                            Toast.makeText(this@MainActivity, "실패", Toast.LENGTH_SHORT).show()
+                    // 사용자 정보 요청 (기본)
+                    UserApiClient.instance.me { user, error ->
+                        if (error != null) {
+                            Log.e(TAG, "사용자 정보 요청 실패", error)
                         }
-
-                        override fun onResponse(call: Call<KakaoInfo>, response: Response<KakaoInfo>) {
-                            //정상응답이 올경우
-                            Log.d(TAG, "2차 로그인 성공 response : \n ${response.toString()}")
-                            Log.d(TAG, "2차 로그인 성공 response.body : \n ${response.body().toString()}")
-                            Toast.makeText(this@MainActivity, "성공", Toast.LENGTH_SHORT).show()
+                        else if (user != null) {
+                            Log.i(TAG, "사용자 정보 요청 성공" +
+                                    "\n회원번호: ${user.id}" +
+                                    "\n이메일: ${user.kakaoAccount?.email}" +
+                                    "\n닉네임: ${user.kakaoAccount?.profile?.nickname}" +
+                                    "\n프로필사진: ${user.kakaoAccount?.profile?.thumbnailImageUrl}")
                         }
-                    })
+                    }
                 }
             }
         }
